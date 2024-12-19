@@ -52,3 +52,27 @@ function tumblr_json_importer_meta(): void {
 	);
 }
 add_action( 'rest_api_init', 'tumblr_json_importer_meta' );
+
+/**
+ * Add post_content_filtered to REST API responses.
+ *
+ * @todo This needs auth.
+ *
+ * @return void
+ */
+function tumblr_json_importer_add_post_content_filtered_to_rest(): void {
+	register_rest_field(
+		'post',
+		'content_filtered',
+		array(
+			'get_callback' => function ( $post_data ) {
+				return get_post_field( 'post_content_filtered', $post_data['id'] );
+			},
+			'schema'       => array(
+				'description' => __( 'The post content filtered.', 'tumblr-json-importer' ),
+				'type'        => 'string',
+			),
+		)
+	);
+}
+add_action( 'rest_api_init', 'tumblr_json_importer_add_post_content_filtered_to_rest' );
