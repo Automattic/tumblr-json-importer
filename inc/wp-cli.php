@@ -98,7 +98,7 @@ function tumblr_json_importer_run( $args, $assoc_args ): void {
 		$post_data['post_title'] = isset( $json_post['title'] ) ? $json_post['title'] : '';
 
 		// Set the post slug to be the Tumblr post ID.
-		$post_data['post_name'] = isset( $json_post['id'] ) ? $json_post['id'] : '';
+		$post_data['import_id'] = isset( $json_post['id'] ) ? $json_post['id'] : '';
 
 		// Set the post date.
 		$post_data['post_date']     = gmdate( 'Y-m-d H:i:s', isset( $json_post['publish_time'] ) ? $json_post['publish_time'] : '' );
