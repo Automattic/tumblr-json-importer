@@ -9,8 +9,17 @@
 		"data": {
 			"type": "object",
 			"properties": {
+				"settings": {
+					"type": "object"
+				},
 				"posts": {
-					"type": "array"
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+
+						}
+					}
 				}
 			}
 		}
