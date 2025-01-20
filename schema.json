@@ -7,17 +7,172 @@
 			"type": "string"
 		},
 		"data": {
+			"description": "This object contains everything we use to import the Tumblr data.",
 			"type": "object",
 			"properties": {
 				"settings": {
+					"description": "This object contains the settings for the Tumblelog.",
 					"type": "object"
 				},
 				"posts": {
+					"description": "This array contains all the posts in the Tumblelog.",
 					"type": "array",
 					"items": {
 						"type": "object",
 						"properties": {
-
+							"id": {
+								"type": "string"
+							},
+							"tumblelog_id": {
+								"type": "string"
+							},
+							"state": {
+								"type": "string"
+							},
+							"type": {
+								"type": "string"
+							},
+							"user_time": {
+								"type": "string"
+							},
+							"publish_time": {
+								"type": "string"
+							},
+							"last_modified": {
+								"type": "string"
+							},
+							"meta": {
+								"type": "object",
+								"properties": {
+									"is_paywalled_state": {
+										"type": "boolean"
+									},
+									"two": {
+										"type": "string"
+									},
+									"post_key": {
+										"type": "string"
+									},
+									"has_community_label_bit": {
+										"type": "boolean"
+									},
+									"has_content_warning_bit": {
+										"type": "boolean"
+									},
+									"is_blocks_post_format": {
+										"type": "boolean"
+									},
+									"npf_data": {
+										"type": "object",
+										"properties": {
+											"content": {
+												"type": "array",
+												"items": {
+													"type": "object",
+													"properties": {
+														"type": {
+															"type": "string"
+														},
+														"text": {
+															"type": "string"
+														},
+														"subtype": {
+															"type": "string"
+														},
+														"media": {
+															"type": "array"
+														},
+														"colors": {
+															"type": "array"
+														},
+														"exif": {
+															"type": "object"
+														},
+														"attribution": {
+															"type": "object"
+														}
+													}
+												}
+											},
+											"layout": {
+												"type": "array"
+											},
+											"trail": {
+												"type": "array"
+											},
+											"version": {
+												"type": "integer"
+											}
+										}
+									},
+									"interactability_blaze_last_update_time": {
+										"type": "integer"
+									},
+									"from_api": {
+										"type": "boolean"
+									},
+									"generator": {
+										"type": "string"
+									},
+									"request_ip": {
+										"type": "string"
+									},
+									"user_agent": {
+										"type": "string"
+									},
+									"genesis_id": {
+										"type": "string"
+									},
+									"genesis_timestamp": {
+										"type": "integer"
+									},
+									"url_slug": {
+										"type": "string"
+									},
+									"machine_nsfw_flags": {
+										"type": "object",
+										"properties": {
+											"tumblr_adult": {
+												"type": "array",
+												"items": {
+													"type": "boolean"
+												}
+											},
+											"tumblr_mature": {
+												"type": "array",
+												"items": {
+													"type": "boolean"
+												}
+											}
+										}
+									},
+									"machine_spam_flags": {
+										"type": "object",
+										"properties": {
+											"ak": {
+												"type": "array",
+												"items": {
+													"type": "boolean"
+												}
+											}
+										}
+									},
+									"brand_safety_verdicts": {
+										"type": "object",
+										"properties": {
+											"tumblr-ufa-v6": {
+												"type": "boolean"
+											}
+										}
+									},
+									"posts_attributed_to": {
+										"type": "array",
+										"items": {
+											"type": "object"
+										}
+									}
+								}
+							}
 						}
 					}
 				}
