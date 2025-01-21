@@ -44,6 +44,9 @@
 							"meta": {
 								"type": "object",
 								"properties": {
+									"id": {
+										"type": "integer"
+									},
 									"is_paywalled_state": {
 										"type": "boolean"
 									},
@@ -83,7 +86,7 @@
 															"type": "array"
 														},
 														"colors": {
-															"type": "array"
+															"type": "object"
 														},
 														"exif": {
 															"type": "object"

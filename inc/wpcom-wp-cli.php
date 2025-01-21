@@ -67,7 +67,7 @@ function tumblr_json_importer_run( $args, $assoc_args ): void {
 	}
 
 	// Decode the JSON data.
-	$json_posts = json_decode( $json_data, true );
+	$tumblr_posts = json_decode( $json_data, true );
 
 	// Check if the JSON is valid.
 	if ( json_last_error() !== JSON_ERROR_NONE ) {
@@ -78,7 +78,7 @@ function tumblr_json_importer_run( $args, $assoc_args ): void {
 	\WP_CLI::log(
 		sprintf(
 			'JSON file read successfully. Found %d posts.',
-			count( $json_posts )
+			count( $tumblr_posts )
 		)
 	);
 
@@ -92,7 +92,7 @@ function tumblr_json_importer_run( $args, $assoc_args ): void {
 	// Convert the posts to WordPress posts.
 	$posts_data = array();
 
-	foreach ( $json_posts as $json_post ) {
+	foreach ( $tumblr_posts as $tumblr_post ) {
 		// Default post data.
 		$post_data = array(
 			'post_status' => 'publish',
@@ -100,31 +100,31 @@ function tumblr_json_importer_run( $args, $assoc_args ): void {
 		);
 
 		// Set the post title as the Tumblr Post title.
-		$post_data['post_title'] = isset( $json_post['title'] ) ? $json_post['title'] : '';
+		$post_data['post_title'] = isset( $tumblr_post['title'] ) ? $tumblr_post['title'] : '';
 
 		// Set the post slug to be the Tumblr post ID.
-		$post_data['import_id'] = isset( $json_post['id'] ) ? $json_post['id'] : '';
+		$post_data['import_id'] = isset( $tumblr_post['id'] ) ? $tumblr_post['id'] : '';
 
 		// Set the post date.
-		$post_data['post_date']     = gmdate( 'Y-m-d H:i:s', isset( $json_post['publish_time'] ) ? $json_post['publish_time'] : '' );
-		$post_data['post_modified'] = gmdate( 'Y-m-d H:i:s', isset( $json_post['last_modified'] ) ? $json_post['last_modified'] : '' );
+		$post_data['post_date']     = gmdate( 'Y-m-d H:i:s', isset( $tumblr_post['publish_time'] ) ? $tumblr_post['publish_time'] : '' );
+		$post_data['post_modified'] = gmdate( 'Y-m-d H:i:s', isset( $tumblr_post['last_modified'] ) ? $tumblr_post['last_modified'] : '' );
 
 		// Map Tumblr root-level fields to post meta.
-		$json_post['meta']['id']           = $json_post['id'];
-		$json_post['meta']['tumblelog_id'] = $json_post['tumblelog_id'];
-		$json_post['meta']['state']        = $json_post['state'];
-		$json_post['meta']['type']         = $json_post['type'];
+		$tumblr_post['meta']['id']           = $tumblr_post['id'];
+		$tumblr_post['meta']['tumblelog_id'] = $tumblr_post['tumblelog_id'];
+		$tumblr_post['meta']['state']        = $tumblr_post['state'];
+		$tumblr_post['meta']['type']         = $tumblr_post['type'];
 
 		// Set the post content and also the filtered (NPF) content.
-		$post_data['post_content']          = isset( $json_post['meta']['two'] ) ? $json_post['meta']['two'] : '';
-		$post_data['post_content_filtered'] = maybe_serialize( isset( $json_post['meta']['npf_data'] ) ? $json_post['meta']['npf_data'] : array() );
+		$post_data['post_content']          = isset( $tumblr_post['meta']['two'] ) ? $tumblr_post['meta']['two'] : '';
+		$post_data['post_content_filtered'] = maybe_serialize( isset( $tumblr_post['meta']['npf_data'] ) ? $tumblr_post['meta']['npf_data'] : array() );
 
 		// Remove the post content from the metadata.
-		unset( $json_post['meta']['two'], $json_post['meta']['npf_data'] );
+		unset( $tumblr_post['meta']['two'], $tumblr_post['meta']['npf_data'] );
 
 		// Set the post meta.
 		$post_data['meta_input'] = array(
-			'_tumblr_data' => maybe_serialize( $json_post['meta'] ),
+			'_tumblr_data' => maybe_serialize( $tumblr_post['meta'] ),
 		);
 
 		// Add the post data to the array.
