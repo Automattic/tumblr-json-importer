@@ -3,16 +3,26 @@
 	"$schema": "http://json-schema.org/draft-07/schema#",
 	"type": "object",
 	"properties": {
-		"$schema": {
-			"type": "string"
+		"meta": {
+			"type": "object",
+			"properties": {
+				"status": {
+					"type": "integer"
+				},
+				"msg": {
+					"type": "string"
+				}
+			}
 		},
-		"data": {
+		"response": {
 			"description": "This object contains everything we use to import the Tumblr data.",
 			"type": "object",
 			"properties": {
-				"settings": {
-					"description": "This object contains the settings for the Tumblelog.",
-					"type": "object"
+				"id": {
+					"type": "integer"
+				},
+				"name": {
+					"type": "string"
 				},
 				"posts": {
 					"description": "This array contains all the posts in the Tumblelog.",
@@ -44,23 +54,203 @@
 							"meta": {
 								"type": "object",
 								"properties": {
-									"id": {
-										"type": "integer"
-									},
-									"is_paywalled_state": {
-										"type": "boolean"
-									},
-									"two": {
+									"user_id": {
 										"type": "string"
 									},
 									"post_key": {
 										"type": "string"
 									},
-									"has_community_label_bit": {
+									"one": {
+										"type": "string"
+									},
+									"two": {
+										"type": "string"
+									},
+									"is_paywalled_state": {
 										"type": "boolean"
 									},
 									"has_content_warning_bit": {
 										"type": "boolean"
+									},
+									"reblog_count": {
+										"type": "string"
+									},
+									"has_community_label_bit": {
+										"type": "boolean"
+									},
+									"url_slug": {
+										"type": "string"
+									},
+									"answer_count": {
+										"type": "integer"
+									},
+									"takeovers": {
+										"type": "object",
+										"properties": {
+											"120": {
+												"type": "object",
+												"properties": {
+													"end": {
+														"type": "integer"
+													},
+													"start": {
+														"type": "integer"
+													}
+												}
+											},
+											"167": {
+												"type": "object",
+												"properties": {
+													"end": {
+														"type": "integer"
+													},
+													"start": {
+														"type": "integer"
+													}
+												}
+											},
+											"383": {
+												"type": "object",
+												"properties": {
+													"end": {
+														"type": "integer"
+													},
+													"start": {
+														"type": "integer"
+													}
+												}
+											},
+											"284": {
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "integer"
+													},
+													"end": {
+														"type": "integer"
+													}
+												}
+											},
+											"851": {
+												"type": "object",
+												"properties": {
+													"end": {
+														"type": "integer"
+													},
+													"start": {
+														"type": "number"
+													}
+												}
+											},
+											"29": {
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "number"
+													},
+													"end": {
+														"type": "string"
+													}
+												}
+											},
+											"1462": {
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "number"
+													},
+													"end": {
+														"type": "integer"
+													}
+												}
+											},
+											"1469": {
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "number"
+													},
+													"end": {
+														"type": "string"
+													}
+												}
+											},
+											"1526": {
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "number"
+													},
+													"end": {
+														"type": "string"
+													}
+												}
+											},
+											"1545": {
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "number"
+													},
+													"end": {
+														"type": "string"
+													}
+												}
+											},
+											"1561": {
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "number"
+													},
+													"end": {
+														"type": "integer"
+													}
+												}
+											},
+											"1565": {
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "number"
+													},
+													"end": {
+														"type": "string"
+													}
+												}
+											},
+											"1666": {
+												"type": "object",
+												"properties": {
+													"start": {
+														"type": "number"
+													},
+													"end": {
+														"type": "string"
+													}
+												}
+											}
+										}
+									},
+									"brand_safety_verdicts": {
+										"type": "object",
+										"properties": {
+											"tumblr-ufa-v1": {
+												"type": "boolean"
+											},
+											"tumblr-ufa-v3": {
+												"type": "boolean"
+											},
+											"tumblr-ufa-v4": {
+												"type": "boolean"
+											},
+											"tumblr-ufa-v6": {
+												"type": "boolean"
+											},
+											"tumblr-ufa-v5": {
+												"type": "boolean"
+											}
+										}
 									},
 									"is_blocks_post_format": {
 										"type": "boolean"
@@ -98,10 +288,12 @@
 												}
 											},
 											"layout": {
-												"type": "array"
+												"type": "array",
+												"items": {}
 											},
 											"trail": {
-												"type": "array"
+												"type": "array",
+												"items": {}
 											},
 											"version": {
 												"type": "integer"
@@ -128,9 +320,6 @@
 									},
 									"genesis_timestamp": {
 										"type": "integer"
-									},
-									"url_slug": {
-										"type": "string"
 									},
 									"machine_nsfw_flags": {
 										"type": "object",
@@ -160,14 +349,6 @@
 											}
 										}
 									},
-									"brand_safety_verdicts": {
-										"type": "object",
-										"properties": {
-											"tumblr-ufa-v6": {
-												"type": "boolean"
-											}
-										}
-									},
 									"posts_attributed_to": {
 										"type": "array",
 										"items": {
@@ -175,6 +356,9 @@
 										}
 									}
 								}
+							},
+							"title": {
+								"type": "string"
 							}
 						}
 					}
