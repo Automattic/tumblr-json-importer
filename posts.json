@@ -1,6 +1,6 @@
 {
 	"$schema": "https://raw.githubusercontent.com/Automattic/tumblr-json-importer/trunk/schema.json",
-	"data": {
+	"response": {
 		"settings": {
 			"type": "object"
 		},
@@ -13,6 +13,7 @@
 				"user_time": "1734468849",
 				"publish_time": "1734468849",
 				"last_modified": "1734470028",
+				"title": "test title",
 				"meta": {
 					"is_paywalled_state": false,
 					"two": "<p>this is a test</p>",

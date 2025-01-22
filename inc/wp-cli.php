@@ -1,4 +1,8 @@
 <?php
+declare( strict_types = 1 );
+
+namespace CupcakeLabs\API;
+
 /**
  * The Tumblr JSON importer WP-CLI command.
  *
@@ -6,7 +10,26 @@
  */
 
 class Tumblr_JSON_Importer {
+	/**
+	 * The posts that were imported.
+	 *
+	 * @var array
+	 */
 	public array $imported = array();
+
+	/**
+	 * The data from the JSON file.
+	 *
+	 * @var array
+	 */
+	public array $data = array();
+
+	/**
+	 * The WordPress posts that were created.
+	 *
+	 * @var array
+	 */
+	public array $wp_posts = array();
 
 	/**
 	 * Run the Tumblr JSON importer.
@@ -30,8 +53,10 @@ class Tumblr_JSON_Importer {
 	 *
 	 * @return void
 	 */
-	public function tumblr_json_importer_run( $args, $assoc_args ): void {
-		global $wp_filesystem;
+	public function cli_run( $args, $assoc_args ): void {
+		// Ensure that WordPress is in the importing state.
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
+		define( 'WP_IMPORTING', true );
 
 		// Parse passed args and ensure defaults are set.
 		$assoc_args = wp_parse_args(
@@ -41,8 +66,32 @@ class Tumblr_JSON_Importer {
 			)
 		);
 
-		// Ensure that the file exists.
-		$file_path = $args[0];
+		// Read the JSON file, verify it, and set the data.
+		$this->read_json( $args[0] );
+
+		// Parse through the Tumblr JSON data and compile the WP post data.
+		$this->compile_postdata( $assoc_args['dry-run'] );
+
+		// Insert or update posts in WordPress.
+		$this->maybe_insert_posts();
+
+		// These are only shown if --debug is set.
+		\WP_CLI::debug( 'Imported Tumblr post IDs:' );
+		\WP_CLI::debug( print_r( $this->imported, true ) );
+
+		// Finished import, tell the user how many posts were imported.
+		\WP_CLI::success( 'Import complete. Imported ' . count( $this->imported ) . ' posts.' );
+	}
+
+	/**
+	 * Read the JSON file and set the data.
+	 *
+	 * @param string $file_path The path to the JSON file.
+	 *
+	 * @return void
+	 */
+	private function read_json( $file_path ): void {
+		global $wp_filesystem;
 
 		// Initialize the WordPress Filesystem API.
 		if ( ! function_exists( 'WP_Filesystem' ) ) {
@@ -53,7 +102,7 @@ class Tumblr_JSON_Importer {
 
 		// Check if the file exists.
 		if ( ! $wp_filesystem->exists( $file_path ) ) {
-			WP_CLI::error( "The file '{$file_path}' does not exist." );
+			\WP_CLI::error( "The file '{$file_path}' does not exist." );
 		}
 
 		// Read the file contents using the WordPress Filesystem API.
@@ -61,42 +110,43 @@ class Tumblr_JSON_Importer {
 
 		// Check if the file could be read.
 		if ( false === $json_data ) {
-			WP_CLI::error( "Failed to read the file '{$file_path}'." );
+			\WP_CLI::error( "Failed to read the file '{$file_path}'." );
 		}
 
 		// Decode the JSON data.
 		$json_data = json_decode( $json_data, true );
 
-		if ( ! isset( $json_data['data'] ) ) {
-			WP_CLI::error( 'Invalid JSON file: Missing "data" key.' );
+		if ( ! isset( $json_data['response'] ) ) {
+			\WP_CLI::error( 'Invalid JSON file: Missing "response" key.' );
 		}
 
-		$data = $json_data['data'];
+		$this->data = $json_data['response'];
 
 		// Check if the JSON is valid.
 		if ( json_last_error() !== JSON_ERROR_NONE ) {
-			WP_CLI::error( 'Invalid JSON file: ' . json_last_error_msg() );
+			\WP_CLI::error( 'Invalid JSON file: ' . json_last_error_msg() );
 		}
 
 		// Tell the user how many posts were found.
-		WP_CLI::log(
+		\WP_CLI::log(
 			sprintf(
 				'JSON file read successfully. Found %d posts.',
-				count( $data['posts'] )
+				count( $this->data['posts'] )
 			)
 		);
+	}
 
+	/**
+	 * Compile the post data from the JSON file.
+	 *
+	 * @return void
+	 */
+	private function compile_postdata( $dry_run ): void {
 		// Args verified, let's start the import.
-		WP_CLI::log( 'Starting Tumblr JSON Importer...' );
-
-		// Ensure that WordPress is in the importing state.
-		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
-		define( 'WP_IMPORTING', true );
+		\WP_CLI::log( 'Starting Tumblr JSON Importer...' );
 
 		// Convert the posts to WordPress posts.
-		$wp_posts = array();
-
-		foreach ( $data['posts'] as $tumblr_post ) {
+		foreach ( $this->data['posts'] as $tumblr_post ) {
 			// Default post data.
 			$wp_post_data = array(
 				'post_status' => 'publish',
@@ -107,8 +157,8 @@ class Tumblr_JSON_Importer {
 			$wp_post_data['post_title'] = isset( $tumblr_post['title'] ) ? $tumblr_post['title'] : '';
 
 			// Set the post date.
-			$wp_post_data['post_date']     = gmdate( 'Y-m-d H:i:s', isset( $tumblr_post['publish_time'] ) ? $tumblr_post['publish_time'] : 0 );
-			$wp_post_data['post_modified'] = gmdate( 'Y-m-d H:i:s', isset( $tumblr_post['last_modified'] ) ? $tumblr_post['last_modified'] : 0 );
+			$wp_post_data['post_date']     = gmdate( 'Y-m-d H:i:s', isset( $tumblr_post['publish_time'] ) ? intval( $tumblr_post['publish_time'] ) : 0 );
+			$wp_post_data['post_modified'] = gmdate( 'Y-m-d H:i:s', isset( $tumblr_post['last_modified'] ) ? intval( $tumblr_post['last_modified'] ) : 0 );
 
 			// Map Tumblr root-level fields to post meta.
 			$tumblr_post['meta']['id']           = $tumblr_post['id'];
@@ -130,24 +180,30 @@ class Tumblr_JSON_Importer {
 			);
 
 			// Add the post data to the array.
-			$wp_posts[] = $wp_post_data;
+			$this->wp_posts[] = $wp_post_data;
 		}
 
-		if ( 'true' === $assoc_args['dry-run'] ) {
-			WP_CLI::debug( print_r( $wp_posts, true ) );
-			WP_CLI::success( 'Dry run complete. No posts were imported. Set --debug to see the generated posts array.' );
+		if ( 'true' === $dry_run ) {
+			\WP_CLI::debug( print_r( $this->wp_posts, true ) );
+			\WP_CLI::success( 'Dry run complete. No posts were imported. Set --debug to see the generated posts array.' );
 			exit;
 		}
+	}
 
+	/**
+	 * Loop over compiled posts and insert/update them.
+	 *
+	 * @return void
+	 */
+	private function maybe_insert_posts(): void {
 		// Not a dry run, import the posts.
-		$this->imported = array();
-
 		// Loop over each post and figure out if we're inserting or updating.
-		foreach ( $wp_posts as $wp_post_data ) {
+		foreach ( $this->wp_posts as $wp_post_data ) {
 			// Grab the original Tumblr post ID.
 			$tumblr_post_id = intval( $wp_post_data['meta_input']['_tumblr_post_id'] );
 
 			// Meta query to check if the post already exists.
+			// @todo This may be expensive, test how much load we're adding here.
 			$results = get_posts(
 				array(
 					'post_type'      => 'post',
@@ -159,48 +215,33 @@ class Tumblr_JSON_Importer {
 			);
 
 			// If the post already exists, update it, otherwise insert it.
-			if ( ! empty( $results ) && isset( $results[0] ) ) {
-				$this->update_post( $wp_post_data, $results[0] );
-			} else {
-				$this->insert_post( $wp_post_data );
-			}
+			$id = ( empty( $results ) ) ? 0 : $results[0];
+			$this->insert_post( $wp_post_data, $id );
+		}
+	}
+
+	/**
+	 * Insert a post into WordPress.
+	 *
+	 * @param array $wp_post_data The post data to insert.
+	 * @param int   $id           The post ID to update.
+	 *
+	 * @return void
+	 */
+	private function insert_post( $wp_post_data, $id = 0 ): void {
+		// If an ID was passed, set it in the post data so that the post is updated.
+		if ( intval( $id ) > 0 ) {
+			$wp_post_data['ID'] = $id;
 		}
 
-		// These are only shown if --debug is set.
-		WP_CLI::debug( 'Imported Tumblr post IDs:' );
-		WP_CLI::debug( print_r( $this->imported, true ) );
-
-		WP_CLI::success( 'Import complete. Imported ' . count( $this->imported ) . ' posts.' );
-	}
-
-	/**
-	 * Undocumented function
-	 *
-	 * @param array $wp_post_data
-	 * @param int $post_id
-	 *
-	 * @return void
-	 */
-	private function update_post( $wp_post_data, $post_id ): void {
-		// We should only update a post if something has changed.
-	}
-
-	/**
-	 * Undocumented function
-	 *
-	 * @param [type] $wp_post_data
-	 *
-	 * @return void
-	 */
-	private function insert_post( $wp_post_data ): void {
-		$post_id     = wp_insert_post( $wp_post_data, true, true );
+		$post_id     = wp_insert_post( $wp_post_data, true, false );
 		$tumblr_data = maybe_unserialize( $wp_post_data['meta_input']['_tumblr_data'] );
 
-		WP_CLI::log( 'Importing Tumblr post: ' . $tumblr_data['id'] );
+		\WP_CLI::log( 'Importing Tumblr post: ' . $tumblr_data['id'] );
 
 		// Attempt to gracefully handle errors.
 		if ( is_wp_error( $post_id ) ) {
-			WP_CLI::error(
+			\WP_CLI::error(
 				sprintf(
 					'Failed to import tumblr post: %s. Imported %d posts before this. Error: %s',
 					$tumblr_data['id'],
@@ -210,13 +251,13 @@ class Tumblr_JSON_Importer {
 			);
 		}
 
-		WP_CLI::log( 'Imported Tumblr post: ' . $tumblr_data['id'] );
+		\WP_CLI::log( 'Imported Tumblr post: ' . $tumblr_data['id'] );
 
 		// Add the post ID to the imported array.
-		$this->imported[] = $tumblr_data['id'];
+		$this->imported[ $post_id ] = $tumblr_data['id'];
 	}
 }
 
 if ( defined( '\WP_CLI' ) && \WP_CLI ) {
-	WP_CLI::add_command( 'tumblr-json-import', array( 'Tumblr_JSON_Importer', 'tumblr_json_importer_run' ) );
+	\WP_CLI::add_command( 'tumblr-json-import', array( __NAMESPACE__ . '\Tumblr_JSON_Importer', 'cli_run' ) );
 }
