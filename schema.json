@@ -24,6 +24,54 @@
 				"name": {
 					"type": "string"
 				},
+				"settings": {
+					"description": "This array contains all tumblelog-specific settings",
+					"type": "array",
+					"properties": {
+						"id": {
+							"type": "string"
+						},
+						"avatar_url": {
+							"description": "The 128x128 avatar url for the tumblelog",
+							"type": "string"
+						},
+						"url": {
+							"description": "The *.tumblr.com url for the tumblelog",
+							"type": "string"
+						},
+						"name": {
+							"type": "string"
+						},
+						"cname": {
+							"description": "The custom domain of the tumblelog (if any)",
+							"type": "string"
+						},
+						"long_description": {
+							"type": "string"
+						},
+						"title": {
+							"type": "string"
+						},
+						"theme_id": {
+							"type": "integer"
+						},
+						"show_likes_count": {
+							"type": "boolean"
+						},
+						"show_following_count": {
+							"type": "boolean"
+						},
+						"is_private_blog": {
+							"type": "boolean"
+						},
+						"is_group_blog": {
+							"type": "boolean"
+						},
+						"is_premium_partner": {
+							"type": "boolean"
+						}
+					}
+				},
 				"posts": {
 					"description": "This array contains all the posts in the Tumblelog.",
 					"type": "array",
