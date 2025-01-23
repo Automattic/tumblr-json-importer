@@ -1,8 +1,24 @@
 {
 	"$schema": "https://raw.githubusercontent.com/Automattic/tumblr-json-importer/trunk/schema.json",
+	"meta": {
+		"status": 200,
+		"msg": "OK"
+	},
 	"response": {
 		"settings": {
-			"type": "object"
+			"id": "939752097235",
+			"avatar_url": "https://",
+			"url": "https://",
+			"name": "test",
+			"cname": "google.com",
+			"long_description": "this is a test",
+			"title": "test",
+			"theme_id": 2335235,
+			"show_likes_count": true,
+			"show_following_count": true,
+			"is_private_blog": true,
+			"is_group_blog": true,
+			"is_premium_partner": true
 		},
 		"posts": [
 			{

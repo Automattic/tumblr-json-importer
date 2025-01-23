@@ -26,7 +26,7 @@
 				},
 				"settings": {
 					"description": "This array contains all tumblelog-specific settings",
-					"type": "array",
+					"type": "object",
 					"properties": {
 						"id": {
 							"type": "string"

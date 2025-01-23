@@ -25,11 +25,13 @@ class Tumblr_JSON_Importer {
 	public array $data = array();
 
 	/**
-	 * The WordPress posts that were created.
+	 * The array of WordPress posts to insert.
 	 *
 	 * @var array
 	 */
 	public array $wp_posts = array();
+
+	public array $wp_settings = array();
 
 	/**
 	 * Run the Tumblr JSON importer.
@@ -66,11 +68,13 @@ class Tumblr_JSON_Importer {
 			)
 		);
 
-		// Read the JSON file, verify it, and set the data.
+		// Read the JSON file, verify it, and set the data property.
 		$this->read_json( $args[0] );
 
-		// Parse through the Tumblr JSON data and compile the WP post data.
-		$this->compile_postdata( $assoc_args['dry-run'] );
+		$this->collate_settings( $assoc_args['dry-run'] );
+
+		// Parse through the Tumblr JSON data and collate the WP post data.
+		$this->collate_postdata( $assoc_args['dry-run'] );
 
 		// Insert or update posts in WordPress.
 		$this->maybe_insert_posts();
@@ -116,16 +120,26 @@ class Tumblr_JSON_Importer {
 		// Decode the JSON data.
 		$json_data = json_decode( $json_data, true );
 
-		if ( ! isset( $json_data['response'] ) ) {
-			\WP_CLI::error( 'Invalid JSON file: Missing "response" key.' );
-		}
-
-		$this->data = $json_data['response'];
-
 		// Check if the JSON is valid.
 		if ( json_last_error() !== JSON_ERROR_NONE ) {
 			\WP_CLI::error( 'Invalid JSON file: ' . json_last_error_msg() );
 		}
+
+		// Check the meta status of the JSON data.
+		if ( ! isset( $json_data['meta'] ) ) {
+			\WP_CLI::error( 'Invalid JSON file: Missing "meta" key.' );
+		}
+
+		if ( 200 !== $json_data['meta']['status'] ) {
+			\WP_CLI::error( 'Invalid response: Meta status is not 200.' );
+		}
+
+		if ( ! isset( $json_data['response'] ) ) {
+			\WP_CLI::error( 'Invalid JSON file: Missing "response" key.' );
+		}
+
+		// Checks have passed, Set the data property with our response data.
+		$this->data = $json_data['response'];
 
 		// Tell the user how many posts were found.
 		\WP_CLI::log(
@@ -136,12 +150,21 @@ class Tumblr_JSON_Importer {
 		);
 	}
 
+	private function collate_settings( $dry_run ): void {
+
+		if ( 'true' === $dry_run ) {
+			\WP_CLI::debug( print_r( $this->wp_settings, true ) );
+			\WP_CLI::success( 'Dry run complete. No settings were imported. Set --debug to see the generated settings array.' );
+			exit;
+		}
+	}
+
 	/**
-	 * Compile the post data from the JSON file.
+	 * collate the post data from the JSON file.
 	 *
 	 * @return void
 	 */
-	private function compile_postdata( $dry_run ): void {
+	private function collate_postdata( $dry_run ): void {
 		// Args verified, let's start the import.
 		\WP_CLI::log( 'Starting Tumblr JSON Importer...' );
 
@@ -191,7 +214,7 @@ class Tumblr_JSON_Importer {
 	}
 
 	/**
-	 * Loop over compiled posts and insert/update them.
+	 * Loop over collated posts and insert/update them.
 	 *
 	 * @return void
 	 */
@@ -210,7 +233,7 @@ class Tumblr_JSON_Importer {
 					'posts_per_page' => 1,
 					'meta_key'       => '_tumblr_post_id',
 					'meta_value'     => $tumblr_post_id,
-					'fields'         => 'ids',
+					'fields'         => 'ids', // Only return the post ID, an attempt at optimization.
 				)
 			);
 
