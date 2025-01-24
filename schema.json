@@ -410,7 +410,28 @@
 							}
 						}
 					}
-				}
+				},
+        "pages" : {
+          "description": "This array contains all the pages in the Tumblelog.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "body": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              },
+              "is_redirect": {
+                "type": "boolean"
+              }
+            }
+          }
+          }
 			}
 		}
 	}
