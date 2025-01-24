@@ -417,17 +417,32 @@
           "items": {
             "type": "object",
             "properties": {
+              "path": {
+                "type": "string"
+              },
               "title": {
                 "type": "string"
               },
-              "body": {
+              "content": {
                 "type": "string"
               },
-              "url": {
-                "type": "string"
+              "position": {
+                "type": "integer"
+              },
+              "updated_at": {
+                "type": "integer"
+              },
+              "custom_template": {
+                "type": "boolean"
+              },
+              "show_link": {
+                "type": "boolean"
               },
               "is_redirect": {
                 "type": "boolean"
+              },
+              "url": {
+                "type": "string"
               }
             }
           }
