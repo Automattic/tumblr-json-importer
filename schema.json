@@ -440,6 +440,12 @@
 										"from_tumblelog_id": {
 											"type": "string"
 										},
+										"from_tumblelog_name": {
+											"type": "string"
+										},
+										"from_tumblelog_url": {
+											"type": "string"
+										},
 										"tumblelog_id": {
 											"type": "string"
 										},
@@ -450,6 +456,9 @@
 											"type": "string"
 										},
 										"depth": {
+											"type": "string"
+										},
+										"text": {
 											"type": "string"
 										},
 										"meta": {
@@ -537,11 +546,11 @@
               "tumblelog_id": {
                 "description": "The ID of the user who liked the post.",
                 "type": "integer"
-              }
-            }
-          }
-        }
+								}
+							}
+						}
+					}
+				}
 			}
 		}
-	}
 }
