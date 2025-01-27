@@ -408,7 +408,7 @@
 							"title": {
 								"type": "string"
 							},
-							"notes": {
+							"replies": {
 								"type": "array",
 								"items": {
 									"type": "object",
