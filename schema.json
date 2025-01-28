@@ -515,7 +515,26 @@
               }
             }
           }
+        },
+        "likes": {
+          "description": "This array contains likes for the tumblelog's posts.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "root_post_id": {
+                "type": "string"
+              },
+              "timestamp": {
+                "type": "string"
+              },
+              "tumblelog_id": {
+                "description": "The ID of the user who liked the post.",
+                "type": "integer"
+              }
+            }
           }
+        }
 			}
 		}
 	}
