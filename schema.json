@@ -99,16 +99,18 @@
 							"last_modified": {
 								"type": "string"
 							},
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
 							"meta": {
 								"type": "object",
 								"properties": {
 									"user_id": {
 										"type": "string"
 									},
-                  "tags": {
-                    "type": "string",
-                    "description": "comma separated values"
-                  },
 									"post_key": {
 										"type": "string"
 									},
