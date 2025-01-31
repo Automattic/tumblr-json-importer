@@ -491,6 +491,80 @@
 										}
 									}
 								}
+							},
+							"media": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"url": {
+											"type": "string",
+											"format": "uri"
+										},
+										"file_type": {
+											"type": "string"
+										},
+										"type": {
+											"type": "string",
+											"enum": ["audio", "image", "video"]
+										},
+										"meta": {
+											"type": "object",
+											"properties": {
+												"title": {
+													"type": "string"
+												},
+												"artist": {
+													"type": "string"
+												},
+												"album": {
+													"type": "string"
+												},
+												"alt_text": {
+													"type": "string"
+												},
+												"caption": {
+													"type": "string"
+												},
+												"exif": {
+													"type": "object"
+												}
+											}
+										},
+										"poster": {
+											"type": "object",
+											"properties": {
+												"url": {
+													"type": "string",
+													"format": "uri"
+												},
+												"file_type": {
+													"type": "string"
+												},
+												"type": {
+													"type": "string",
+													"enum": ["image"]
+												}
+											}
+										},
+										"filmstrip": {
+											"type": "object",
+											"properties": {
+												"url": {
+													"type": "string",
+													"format": "uri"
+												},
+												"file_type": {
+													"type": "string"
+												},
+												"type": {
+													"type": "string",
+													"enum": ["image"]
+												}
+											}
+										}
+									}
+								}
 							}
 						}
 					}
