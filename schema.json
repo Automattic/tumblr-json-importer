@@ -99,12 +99,12 @@
 							"last_modified": {
 								"type": "string"
 							},
-              "tags": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
+							"tags": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
 							"meta": {
 								"type": "object",
 								"properties": {
@@ -495,57 +495,57 @@
 						}
 					}
 				},
-        "pages" : {
-          "description": "This array contains all the pages in the Tumblelog.",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "path": {
-                "type": "string"
-              },
-              "title": {
-                "type": "string"
-              },
-              "content": {
-                "type": "string"
-              },
-              "position": {
-                "type": "integer"
-              },
-              "updated_at": {
-                "type": "integer"
-              },
-              "custom_template": {
-                "type": "boolean"
-              },
-              "show_link": {
-                "type": "boolean"
-              },
-              "is_redirect": {
-                "type": "boolean"
-              },
-              "url": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "likes": {
-          "description": "This array contains likes for the tumblelog's posts.",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "root_post_id": {
-                "type": "string"
-              },
-              "timestamp": {
-                "type": "string"
-              },
-              "tumblelog_id": {
-                "description": "The ID of the user who liked the post.",
-                "type": "integer"
+				"pages" : {
+					"description": "This array contains all the pages in the Tumblelog.",
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"path": {
+								"type": "string"
+							},
+							"title": {
+								"type": "string"
+							},
+							"content": {
+								"type": "string"
+							},
+							"position": {
+								"type": "integer"
+							},
+							"updated_at": {
+								"type": "integer"
+							},
+							"custom_template": {
+								"type": "boolean"
+							},
+							"show_link": {
+								"type": "boolean"
+							},
+							"is_redirect": {
+								"type": "boolean"
+							},
+							"url": {
+								"type": "string"
+							}
+						}
+					}
+				},
+				"likes": {
+					"description": "This array contains likes for the tumblelog's posts.",
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"root_post_id": {
+								"type": "string"
+							},
+							"timestamp": {
+								"type": "string"
+							},
+							"tumblelog_id": {
+								"description": "The ID of the user who liked the post.",
+								"type": "integer"
 								}
 							}
 						}
